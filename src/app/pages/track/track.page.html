@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Track your weight</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="css-trackbox">
+    <ion-item>
+      <ion-label>Date</ion-label>
+      <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="form_datetime"></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Your weight (in kg)</ion-label>
+      <ion-input [(ngModel)]="form_weight" type="number" inputmode="numeric" min="30" max="300" pattern="[0-9.,]{1,6}"></ion-input>
+    </ion-item>
+    
+    <ion-button class="css-trackbox-track-button" color="primary" (click)="trackWeight()">Track it</ion-button>
+  </div>
+</ion-content>
