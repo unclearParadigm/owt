@@ -10,16 +10,15 @@ import { Router } from '@angular/router';
 })
 export class MonitorPage implements OnInit {
   private chart: Chart;
+
   constructor(private readonly dataStorage: DataStorage, private readonly router: Router) { 
     router.events.subscribe(() => {
-      this.ngOnInit();
+      this.updateChart();
     });
   }
 
-  ngOnInit() {
-    var canvas = <HTMLCanvasElement>document.getElementById('weight-chart');
-    var context = canvas.getContext('2d');
 
+  private updateChart() {
     var dataFromStorage = this.dataStorage.getAll()
     .map(dataPoint => { return {
       x: dataPoint.dateTime,
@@ -35,33 +34,45 @@ export class MonitorPage implements OnInit {
     .map(dataPoint => { return {
       x: dataPoint.x,
       y: averageValue
-    }});;
+    }});
+
+    this.chart.data = {
+      datasets:[ {
+        label: 'Weight',
+        data: dataFromStorage,
+        borderColor: '#7044ff',
+        hoverBackgroundColor: '#7044ff'
+      },{
+        label: 'Average',
+        data: averageLine,
+        borderColor: '#10dc60',
+        hoverBackgroundColor: '#10dc60'
+      }]
+    };
+
+    this.chart.render();
+    this.chart.update();
+  }
+
+  ngOnInit() {
+    var canvas = <HTMLCanvasElement>document.getElementById('weight-chart');
+    var context = canvas.getContext('2d');
 
     this.chart = new Chart(context, {
       type: 'line',
       options: {
         scales: {
-            xAxes: [{
-              distribution: 'linear',
-              type: 'time',
-              time: {
-                unit: 'day'
-              }
-            }]
+          xAxes: [{
+            distribution: 'linear',
+            type: 'time',
+            time: {
+              unit: 'day'
+            }
+          }]
         }
-      }, data: {
-        datasets:[ {
-          label: 'Weight',
-          data: dataFromStorage,
-          borderColor: '#7044ff',
-          hoverBackgroundColor: '#7044ff'
-        },{
-          label: 'Average',
-          data: averageLine,
-          borderColor: '#10dc60',
-          hoverBackgroundColor: '#10dc60'
-        }]
       }
-  });
+    });
+
+    this.updateChart();
   }
 }
